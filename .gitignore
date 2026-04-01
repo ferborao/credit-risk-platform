@@ -1,0 +1,27 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Data (nunca subir datos al repo)
+data/
+*.csv
+*.gz
+*.parquet
+
+# Entorno
+.env
+*.env
+
+# VS Code
+.vscode/
+
+# dbt
+transform/target/
+transform/dbt_packages/
+transform/logs/
