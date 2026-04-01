@@ -1,7 +1,6 @@
 import pytest
-from pydantic import ValidationError
+from pydantic_core import ValidationError
 from ingestion.models.loan import LoanRecord, LoanPerformanceRecord
-
 
 # ── Fixtures: registros válidos que reutilizamos en varios tests ──
 
