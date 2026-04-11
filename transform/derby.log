@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Sat Apr 11 16:39:17 CEST 2026:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.16.1.1 - (1901046): instance a816c00e-019d-7cfb-9d7e-000002f5a368 
+on database directory /home/fernando/credit-risk-platform/transform/metastore_db with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@76ed5528 
+Loaded from file:/home/fernando/credit-risk-platform/.venv/lib/python3.12/site-packages/pyspark/jars/derby-10.16.1.1.jar
+java.vendor=Ubuntu
+java.runtime.version=21.0.10+7-Ubuntu-124.04
+user.dir=/home/fernando/credit-risk-platform/transform
+os.name=Linux
+os.arch=amd64
+os.version=5.15.153.1-microsoft-standard-WSL2
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

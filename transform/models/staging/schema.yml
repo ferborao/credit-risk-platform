@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: stg_loans
+    description: "Vista staging de préstamos hipotecarios desde Silver"
+    columns:
+      - name: loan_id
+        description: "Identificador único del préstamo"
+        tests:
+          - not_null
+          - unique
+
+      - name: original_ltv
+        description: "Loan-to-Value ratio original"
+        tests:
+          - not_null
+
+      - name: original_interest_rate
+        description: "Tipo de interés original"
+        tests:
+          - not_null
+
+      - name: property_state
+        description: "Estado de la propiedad (código de 2 letras)"
+        tests:
+          - not_null

@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: mart_default_analysis
+    description: "Análisis de cartera hipotecaria agrupado por vintage, estado y perfil de riesgo"
+    columns:
+      - name: vintage_year
+        description: "Año de originación del préstamo"
+        tests:
+          - not_null
+
+      - name: total_loans
+        description: "Número de préstamos en el grupo"
+        tests:
+          - not_null
+
+      - name: total_upb
+        description: "Unpaid Balance total del grupo"
+        tests:
+          - not_null
