@@ -4,3 +4,5 @@ pandas
 pyarrow
 python-dotenv
 pytest
+pyspark
+delta-spark
