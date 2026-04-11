@@ -18,3 +18,19 @@ models:
         description: "Unpaid Balance total del grupo"
         tests:
           - not_null
+          
+  - name: mart_vintage_analysis
+    description: "Análisis de cartera por cohorte trimestral para vintage analysis"
+    columns:
+      - name: cohort
+        description: "Identificador de cohorte (ej: 2018-Q1)"
+        tests:
+          - not_null
+
+      - name: total_loans
+        description: "Número de préstamos originados en la cohorte"
+        tests:
+          - not_null
+
+      - name: high_ltv_upb_pct
+        description: "Porcentaje del UPB con LTV superior al 80%"

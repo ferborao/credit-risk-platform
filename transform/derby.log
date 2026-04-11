@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Sat Apr 11 16:39:17 CEST 2026:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.16.1.1 - (1901046): instance a816c00e-019d-7cfb-9d7e-000002f5a368 
+Sat Apr 11 17:06:11 CEST 2026:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.16.1.1 - (1901046): instance a816c00e-019d-7d14-3d0c-00000208ab98 
 on database directory /home/fernando/credit-risk-platform/transform/metastore_db with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@76ed5528 
 Loaded from file:/home/fernando/credit-risk-platform/.venv/lib/python3.12/site-packages/pyspark/jars/derby-10.16.1.1.jar
 java.vendor=Ubuntu

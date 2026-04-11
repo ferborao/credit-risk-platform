@@ -6,3 +6,5 @@ python-dotenv
 pytest
 pyspark
 delta-spark
+dbt-core
+dbt-spark
