@@ -18,7 +18,7 @@ models:
         description: "Unpaid Balance total del grupo"
         tests:
           - not_null
-          
+
   - name: mart_vintage_analysis
     description: "Análisis de cartera por cohorte trimestral para vintage analysis"
     columns:
@@ -34,3 +34,17 @@ models:
 
       - name: high_ltv_upb_pct
         description: "Porcentaje del UPB con LTV superior al 80%"
+    
+  - name: mart_geographic_concentration
+    description: "Concentración geográfica del riesgo de cartera por estado"
+    columns:
+      - name: property_state
+        description: "Estado de la propiedad"
+        tests:
+          - not_null
+          - unique
+
+      - name: upb_concentration_pct
+        description: "Porcentaje del UPB total concentrado en este estado"
+        tests:
+          - not_null
