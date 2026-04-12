@@ -8,3 +8,6 @@ pyspark
 delta-spark
 dbt-core
 dbt-spark
+apache-airflow==2.9.0
+streamlit
+plotly

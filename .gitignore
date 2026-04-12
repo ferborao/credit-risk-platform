@@ -25,3 +25,9 @@ data/
 transform/target/
 transform/dbt_packages/
 transform/logs/
+
+# Terraform
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.backup
+infra/.terraform.lock.hcl
