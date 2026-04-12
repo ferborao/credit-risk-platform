@@ -49,7 +49,9 @@ jobs:
           python-version: '3.12'
 
       - name: Instalar dbt
-        run: pip install dbt-core "dbt-spark[session]" pyspark delta-spark
+        run: |
+          pip install --no-cache-dir dbt-core "dbt-spark[session]" pyspark delta-spark
+          python -c "import pyspark; print('pyspark OK:', pyspark.__version__)"
 
       - name: Instalar Java
         run: |
