@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Instalar Java (necesario para PySpark)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jdk
+          echo "JAVA_HOME=/usr/lib/jvm/default-java" >> $GITHUB_ENV
+
+      - name: Instalar dependencias
+        run: |
+          pip install pydantic requests pandas pyarrow python-dotenv pytest pyspark delta-spark
+          pip install pydantic-core
+
+      - name: Tests de ingesta
+        run: pytest ingestion/tests/ -v
+
+      - name: Tests de Bronze y Silver
+        run: pytest pipelines/tests/ -v
+
+  dbt-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dbt
+        run: pip install dbt-core dbt-spark
+
+      - name: Instalar Java
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jdk
+          echo "JAVA_HOME=/usr/lib/jvm/default-java" >> $GITHUB_ENV
+
+      - name: Crear profiles.yml
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml << EOF
+          credit_risk:
+            target: dev
+            outputs:
+              dev:
+                type: spark
+                method: session
+                schema: default
+                threads: 2
+                host: localhost
+                port: 10001
+                connect_retries: 3
+                connect_timeout: 10
+          EOF
+
+      - name: dbt compile
+        run: |
+          cd transform
+          dbt compile
