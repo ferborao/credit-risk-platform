@@ -49,7 +49,7 @@ jobs:
           python-version: '3.12'
 
       - name: Instalar dbt
-        run: pip install dbt-core dbt-spark
+        run: pip install dbt-core "dbt-spark[session]" pyspark delta-spark
 
       - name: Instalar Java
         run: |
