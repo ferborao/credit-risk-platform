@@ -34,34 +34,33 @@ print(f"Spark version: {spark.version}")
 # Schema del fichero de originación de Freddie Mac
 # Definimos los tipos explícitamente — nunca inferir schemas en producción
 ORIGINATION_SCHEMA = StructType([
-    StructField("credit_score",               StringType(), True),
-    StructField("first_payment_date",         StringType(), True),
-    StructField("first_time_homebuyer_flag",  StringType(), True),
-    StructField("maturity_date",              StringType(), True),
-    StructField("msa",                        StringType(), True),
-    StructField("mip",                        StringType(), True),
-    StructField("number_of_units",            StringType(), True),
-    StructField("occupancy_status",           StringType(), True),
-    StructField("original_ltv",               StringType(), True),
-    StructField("original_cltv",              StringType(), True),
-    StructField("number_of_borrowers",        StringType(), True),
-    StructField("original_dti",               StringType(), True),
-    StructField("original_upb",               StringType(), True),
-    StructField("original_loan_term",         StringType(), True),
-    StructField("origination_date",           StringType(), True),
-    StructField("loan_purpose",               StringType(), True),
-    StructField("property_type",              StringType(), True),
-    StructField("number_of_units_2",          StringType(), True),
-    StructField("occupancy_status_2",         StringType(), True),
-    StructField("property_state",             StringType(), True),
-    StructField("zip_code",                   StringType(), True),
-    StructField("primary_mortgage_insurance_percent", StringType(), True),
-    StructField("product_type",               StringType(), True),
-    StructField("original_interest_rate",     StringType(), True),
-    StructField("seller_name",                StringType(), True),
-    StructField("servicer_name",              StringType(), True),
-    StructField("loan_id",                    StringType(), True),
-    StructField("conforming_flag",            StringType(), True),
+    StructField("credit_score",                         StringType(), True),
+    StructField("first_payment_date",                   StringType(), True),
+    StructField("first_time_homebuyer_flag",            StringType(), True),
+    StructField("maturity_date",                        StringType(), True),
+    StructField("msa",                                  StringType(), True),
+    StructField("mip",                                  StringType(), True),
+    StructField("number_of_units",                      StringType(), True),
+    StructField("occupancy_status",                     StringType(), True),
+    StructField("original_cltv",                        StringType(), True),
+    StructField("original_dti",                         StringType(), True),
+    StructField("original_upb",                         StringType(), True),
+    StructField("original_ltv",                         StringType(), True),
+    StructField("original_interest_rate",               StringType(), True),
+    StructField("channel",                              StringType(), True),
+    StructField("ppm_flag",                             StringType(), True),
+    StructField("product_type",                         StringType(), True),
+    StructField("property_state",                       StringType(), True),
+    StructField("property_type",                        StringType(), True),
+    StructField("zip_code",                             StringType(), True),
+    StructField("loan_id",                              StringType(), True),
+    StructField("loan_purpose",                         StringType(), True),
+    StructField("original_loan_term",                   StringType(), True),
+    StructField("number_of_borrowers",                  StringType(), True),
+    StructField("seller_name",                          StringType(), True),
+    StructField("servicer_name",                        StringType(), True),
+    StructField("super_conforming_flag",                StringType(), True),
+    StructField("pre_harp_loan_id",                     StringType(), True),
 ])
 
 # COMMAND ----------
@@ -99,14 +98,17 @@ def ingest_origination(input_path: str, output_path: str) -> None:
     df.write \
         .format("delta") \
         .mode("append") \
-        .partitionBy("origination_date") \
+        .partitionBy("first_payment_date") \
         .save(f"{output_path}/origination")
 
     print(f"Datos escritos en Bronze: {output_path}/origination")
-    print(f"Particionado por: origination_date")
+    print(f"Particionado por: first_payment_date")
 
 
 # COMMAND ----------
 
 if __name__ == "__main__":
-    ingest_origination(DATA_RAW_PATH, BRONZE_PATH)
+    import glob
+    # Busca todos los ficheros de originación
+    orig_pattern = f"{DATA_RAW_PATH}/sample_orig_*.txt"
+    ingest_origination(orig_pattern, BRONZE_PATH)

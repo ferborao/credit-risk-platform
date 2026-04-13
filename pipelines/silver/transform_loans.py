@@ -22,6 +22,7 @@ builder = (
     .appName("credit-risk-silver-loans")
     .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
     .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+    .config("spark.sql.ansi.enabled", "false")  # Añade esta línea
 )
 
 spark = configure_spark_with_delta_pip(builder).getOrCreate()
@@ -59,9 +60,9 @@ def clean_loans(df: DataFrame) -> DataFrame:
     # pero aplicadas a escala con Spark
     df_clean = df_typed \
         .filter(col("loan_id").isNotNull()) \
-        .filter(col("original_upb") > 0) \
-        .filter(col("original_ltv") > 0) \
-        .filter(col("original_interest_rate") > 0) \
+        .filter(col("original_upb").isNotNull() & (col("original_upb") > 0)) \
+        .filter(col("original_ltv").isNotNull() & (col("original_ltv") > 0)) \
+        .filter(col("original_interest_rate").isNotNull() & (col("original_interest_rate") > 0)) \
         .filter(
             col("credit_score").isNull() |
             ((col("credit_score") >= 300) & (col("credit_score") <= 850))
@@ -122,8 +123,15 @@ def transform_loans(bronze_path: str, silver_path: str) -> None:
     print(f"Silver escrito en: {silver_path}/loans")
     print(f"Particionado por: property_state")
 
+def debug_bronze(bronze_path: str) -> None:
+    df = spark.read.format("delta").load(f"{bronze_path}/origination")
+    print("Schema Bronze:")
+    df.printSchema()
+    print("Muestra de datos:")
+    df.select("loan_id", "original_ltv", "original_upb", "original_interest_rate").show(5)
 
 # COMMAND ----------
 
 if __name__ == "__main__":
+    debug_bronze(BRONZE_PATH)
     transform_loans(BRONZE_PATH, SILVER_PATH)
