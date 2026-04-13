@@ -9,8 +9,8 @@ with loans as (
 with_vintage as (
     select
         *,
-        substring(origination_date, 4, 4) as vintage_year,
-        substring(origination_date, 1, 2) as vintage_month,
+        substring(first_payment_date, 4, 4) as vintage_year,
+        substring(first_payment_date, 1, 2) as vintage_month,
 
         -- Clasificación de LTV en rangos
         case

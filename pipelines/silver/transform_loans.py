@@ -123,6 +123,14 @@ def transform_loans(bronze_path: str, silver_path: str) -> None:
     print(f"Silver escrito en: {silver_path}/loans")
     print(f"Particionado por: property_state")
 
+    # Exportar también en Parquet para consumo de dbt
+    df_silver.write \
+        .format("parquet") \
+        .mode("overwrite") \
+        .save(f"{silver_path}/loans_parquet")
+
+    print(f"Parquet exportado en: {silver_path}/loans_parquet")
+
 def debug_bronze(bronze_path: str) -> None:
     df = spark.read.format("delta").load(f"{bronze_path}/origination")
     print("Schema Bronze:")

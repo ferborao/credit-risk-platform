@@ -11,18 +11,18 @@ with_cohort as (
         *,
         -- Construimos el identificador de cohorte: año + trimestre
         concat(
-            substring(origination_date, 4, 4),
+            substring(first_payment_date, 4, 4),
             '-Q',
             cast(
-                ceil(cast(substring(origination_date, 1, 2) as int) / 3.0)
+                ceil(cast(substring(first_payment_date, 1, 2) as int) / 3.0)
                 as int
             )
         ) as cohort,
 
         -- Año y trimestre por separado para ordenación
-        cast(substring(origination_date, 4, 4) as int) as cohort_year,
+        cast(substring(first_payment_date, 4, 4) as int) as cohort_year,
         cast(
-            ceil(cast(substring(origination_date, 1, 2) as int) / 3.0)
+            ceil(cast(substring(first_payment_date, 1, 2) as int) / 3.0)
             as int
         ) as cohort_quarter,
 

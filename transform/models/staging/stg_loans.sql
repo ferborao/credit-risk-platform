@@ -2,13 +2,12 @@
 -- No hay transformaciones aquí, solo renombrar y seleccionar columnas relevantes
 
 with source as (
-    select * from delta.`{{ env_var('SILVER_PATH', './data/silver') }}/loans`
+    select * from parquet.`/home/fernando/credit-risk-platform/data/silver/loans_parquet`
 ),
 
 staged as (
     select
         loan_id,
-        origination_date,
         credit_score,
         original_upb,
         original_ltv,
@@ -21,6 +20,7 @@ staged as (
         property_type,
         seller_name,
         servicer_name,
+        first_payment_date,
         _ingestion_timestamp,
         _silver_timestamp
     from source
