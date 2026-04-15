@@ -22,71 +22,81 @@ st.markdown("Análisis de riesgo de cartera hipotecaria — Freddie Mac Dataset"
 
 @st.cache_data
 def load_vintage_data():
-    """Datos sintéticos de vintage analysis"""
-    data = []
-    import random
-    random.seed(42)
-    for year in range(2003, 2012):
-        for quarter in range(1, 5):
-            cohort = f"{year}-Q{quarter}"
-            # Las cohortes de 2006-2008 tienen peor rendimiento (burbuja)
-            base_default = 0.02
-            if 2006 <= year <= 2008:
-                base_default = 0.08 + (year - 2006) * 0.03
-            for month in range(1, 37):
-                default_rate = base_default * (1 - 0.97**month)
-                data.append({
-                    "cohort": cohort,
-                    "cohort_year": year,
-                    "cohort_quarter": quarter,
-                    "loan_age_months": month,
-                    "cumulative_default_rate": round(default_rate * 100, 3),
-                })
-    return pd.DataFrame(data)
+    """Carga datos reales del mart de vintage analysis"""
+    path = "/home/fernando/credit-risk-platform/data/silver/loans_parquet"
+    df = pd.read_parquet(path, columns=[
+        "loan_id", "first_payment_date", "original_ltv",
+        "original_upb", "original_interest_rate", "credit_score",
+        "property_state", "loan_purpose", "original_dti"
+    ])
+    df["vintage_year"] = df["first_payment_date"].str[3:7].astype(int)
+    df["vintage_month"] = df["first_payment_date"].str[0:2].astype(int)
+    df["cohort_quarter"] = ((df["vintage_month"] - 1) // 3 + 1).astype(int)
+    df["cohort"] = df["vintage_year"].astype(str) + "-Q" + df["cohort_quarter"].astype(str)
+    df["ltv_bucket"] = pd.cut(
+        df["original_ltv"],
+        bins=[0, 60, 70, 80, 90, 999],
+        labels=["LTV_60", "LTV_61_70", "LTV_71_80", "LTV_81_90", "LTV_90+"]
+    )
+    return df
 
 
 @st.cache_data
 def load_portfolio_data():
-    """Datos sintéticos de composición de cartera"""
-    return pd.DataFrame({
-        "property_state": ["CA", "TX", "FL", "NY", "IL", "OH", "PA", "GA", "NC", "MI"],
-        "total_loans":    [45000, 32000, 28000, 22000, 18000, 15000, 14000, 12000, 11000, 10000],
-        "total_upb":      [18.5, 9.2, 7.8, 11.3, 4.2, 3.1, 3.5, 2.8, 2.4, 2.1],
-        "avg_ltv":        [78.2, 75.1, 79.8, 71.3, 76.5, 74.2, 73.8, 77.1, 76.3, 75.9],
-        "avg_credit_score": [712, 718, 705, 724, 715, 710, 716, 708, 711, 713],
-    })
+    """Carga datos reales de concentración geográfica"""
+    path = "/home/fernando/credit-risk-platform/data/silver/loans_parquet"
+    df = pd.read_parquet(path, columns=[
+        "property_state", "original_upb", "original_ltv",
+        "original_interest_rate", "credit_score", "loan_id"
+    ])
+    return df.groupby("property_state").agg(
+        total_loans=("loan_id", "count"),
+        total_upb=("original_upb", "sum"),
+        avg_ltv=("original_ltv", "mean"),
+        avg_interest_rate=("original_interest_rate", "mean"),
+        avg_credit_score=("credit_score", "mean")
+    ).reset_index().sort_values("total_upb", ascending=False).head(10)
 
 
 @st.cache_data
 def load_risk_profile_data():
-    """Datos sintéticos de perfil de riesgo"""
-    return pd.DataFrame({
-        "ltv_bucket":    ["LTV_60", "LTV_61_70", "LTV_71_80", "LTV_81_90", "LTV_90+"],
-        "total_loans":   [52000, 68000, 95000, 72000, 31000],
-        "default_rate":  [1.2, 2.1, 3.4, 5.8, 9.2],
-        "avg_upb":       [185000, 210000, 245000, 268000, 295000],
-    })
+    """Carga datos reales de perfil de riesgo por LTV"""
+    path = "/home/fernando/credit-risk-platform/data/silver/loans_parquet"
+    df = pd.read_parquet(path, columns=["original_ltv", "original_upb", "loan_id"])
+    df["ltv_bucket"] = pd.cut(
+        df["original_ltv"],
+        bins=[0, 60, 70, 80, 90, 999],
+        labels=["LTV_60", "LTV_61_70", "LTV_71_80", "LTV_81_90", "LTV_90+"]
+    )
+    return df.groupby("ltv_bucket", observed=True).agg(
+        total_loans=("loan_id", "count"),
+        avg_upb=("original_upb", "mean")
+    ).reset_index()
 
 
 # ── Sidebar ──────────────────────────────────────────────────────────────────
-st.sidebar.header("Filtros")
+available_years = sorted(load_vintage_data()["vintage_year"].unique().tolist())
 vintage_years = st.sidebar.multiselect(
     "Años de cohorte",
-    options=list(range(2003, 2012)),
-    default=[2004, 2006, 2007, 2008, 2010]
+    options=available_years,
+    default=available_years
 )
 
 # ── KPIs principales ─────────────────────────────────────────────────────────
-col1, col2, col3, col4 = st.columns(4)
+df_all = load_vintage_data()
+total_loans = f"{len(df_all):,}"
+total_upb = f"${df_all['original_upb'].sum() / 1e9:.1f}B"
+avg_ltv = f"{df_all['original_ltv'].mean():.1f}%"
 
+col1, col2, col3, col4 = st.columns(4)
 with col1:
-    st.metric("Total préstamos", "318,000", "+12% YoY")
+    st.metric("Total préstamos", total_loans)
 with col2:
-    st.metric("UPB Total", "$64.9B", "-3.2% YoY")
+    st.metric("UPB Total", total_upb)
 with col3:
-    st.metric("Default Rate", "3.8%", "+0.4pp")
+    st.metric("LTV Medio", avg_ltv)
 with col4:
-    st.metric("LTV Medio", "76.2%", "-0.8pp")
+    st.metric("Años disponibles", "2006-2008, 2018")
 
 st.divider()
 
