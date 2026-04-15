@@ -2,13 +2,12 @@
 .venv/
 __pycache__/
 *.pyc
-*.pyo
 *.egg-info/
 dist/
 build/
 .pytest_cache/
 
-# Data (nunca subir datos al repo)
+# Data
 data/
 *.csv
 *.gz
@@ -25,6 +24,15 @@ data/
 transform/target/
 transform/dbt_packages/
 transform/logs/
+transform/metastore_db/
+transform/spark-warehouse/
+
+# Spark
+spark-warehouse/
+pipelines/spark-warehouse/
+derby.log
+logs/
+metastore_db/
 
 # Terraform
 infra/.terraform/
