@@ -25,10 +25,16 @@ def spark():
 @pytest.fixture
 def sample_csv(tmp_path):
     """Crea un fichero CSV sintético con formato Freddie Mac"""
+    # Orden: credit_score|first_payment_date|first_time_homebuyer_flag|maturity_date|
+    # msa|mip|number_of_units|occupancy_status|original_cltv|original_dti|
+    # original_upb|original_ltv|original_interest_rate|channel|ppm_flag|
+    # product_type|property_state|property_type|zip_code|loan_id|
+    # loan_purpose|original_loan_term|number_of_borrowers|seller_name|servicer_name|
+    # super_conforming_flag|pre_harp_loan_id
     content = (
-        "720|01/2018|N|01/2048|12345|0|1|P|80|80|2|35|250000|360|01/2018|P|SF|1|P|CA|90210|0|FRM|4.5|Bank of America|Bank of America|L001|Y\n"
-        "680|02/2018|N|02/2048|12346|0|1|P|75|75|1|40|180000|360|02/2018|R|SF|1|P|TX|75001|0|FRM|3.8|Wells Fargo|Wells Fargo|L002|Y\n"
-        "|03/2018|N|03/2048|12347|0|1|P|90|90|1|45|300000|360|03/2018|P|SF|1|P|FL|33101|0|FRM|5.0|Chase|Chase|L003|Y\n"
+        "720|01/2018|N|01/2048|12345|0|1|P|80|35|250000|80|4.5|R|N|FRM|CA|SF|90210|L001|P|360|2|Bank of America|Bank of America|N|\n"
+        "680|02/2018|N|02/2048|12346|0|1|P|75|40|180000|75|3.8|R|N|FRM|TX|SF|75001|L002|R|360|1|Wells Fargo|Wells Fargo|N|\n"
+        "|03/2018|N|03/2048|12347|0|1|P|90|45|300000|90|5.0|R|N|FRM|FL|SF|33101|L003|P|360|1|Chase|Chase|N|\n"
     )
     csv_file = tmp_path / "sample_origination.txt"
     csv_file.write_text(content)
