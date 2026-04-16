@@ -19,21 +19,20 @@ Plataforma que procesa 200,000 hipotecas reales e implementa una arquitectura Me
 | CI/CD | GitHub Actions |
 
 ## Arquitectura
+
+```
 Freddie Mac (datos reales)
-↓
-Ingesta Python + Pydantic
-Validación de schemas
-↓
-Bronze — Delta Lake
-200,000 registros crudos
-↓
-Silver — PySpark
-199,867 registros limpios
-↓
-Gold — dbt
-Métricas de riesgo
-↓
+        ↓
+Ingesta Python + Pydantic — validación de schemas
+        ↓
+Bronze — Delta Lake — 200,000 registros crudos
+        ↓
+Silver — PySpark — 199,867 registros limpios
+        ↓
+Gold — dbt — métricas de riesgo
+        ↓
 Dashboard Streamlit
+```
 
 ## Métricas calculadas
 
@@ -42,16 +41,19 @@ Dashboard Streamlit
 - **Perfil de riesgo por LTV** — distribución de préstamos y volumen por bucket de LTV (60, 70, 80, 90, 90+).
 
 ## Estructura del proyecto
+
+```
 credit-risk-platform/
 ├── ingestion/          # Schemas Pydantic + lector Freddie Mac
 ├── pipelines/
 │   ├── bronze/         # Ingesta a Delta Lake
 │   ├── silver/         # Limpieza y quality checks
-│   └── export_gold.py  # Export Gold a Parquet
+│   └── gold/           # Export Gold a Parquet
 ├── transform/          # Modelos dbt (staging + marts)
 ├── orchestration/      # DAG de Airflow
 ├── dashboard/          # Aplicación Streamlit
 └── infra/              # Terraform (Azure)
+```
 
 ## Tests
 
