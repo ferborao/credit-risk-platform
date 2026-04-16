@@ -131,15 +131,7 @@ def transform_loans(bronze_path: str, silver_path: str) -> None:
 
     print(f"Parquet exportado en: {silver_path}/loans_parquet")
 
-def debug_bronze(bronze_path: str) -> None:
-    df = spark.read.format("delta").load(f"{bronze_path}/origination")
-    print("Schema Bronze:")
-    df.printSchema()
-    print("Muestra de datos:")
-    df.select("loan_id", "original_ltv", "original_upb", "original_interest_rate").show(5)
-
 # COMMAND ----------
 
 if __name__ == "__main__":
-    debug_bronze(BRONZE_PATH)
     transform_loans(BRONZE_PATH, SILVER_PATH)

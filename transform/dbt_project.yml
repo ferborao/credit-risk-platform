@@ -43,6 +43,3 @@ models:
     # Config indicated by + and applies to all files under models//
     marts:
       +materialized: table
-  
-  on-run-start:
-    - "CREATE TABLE IF NOT EXISTS silver_loans USING DELTA LOCATION '/home/fernando/credit-risk-platform/data/silver/loans'"
