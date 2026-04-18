@@ -10,8 +10,8 @@ Plataforma que procesa 200,000 hipotecas reales e implementa una arquitectura Me
 
 | Capa | Tecnología |
 |---|---|
-| Ingesta y validación | Python, Pydantic |
-| Procesamiento | PySpark, Delta Lake |
+| Ingesta | Python | Procesamiento |
+| PySpark, Delta Lake |
 | Transformación | dbt |
 | Orquestación | Apache Airflow |
 | Infraestructura | Terraform, Docker |
@@ -44,7 +44,6 @@ Dashboard Streamlit
 
 ```
 credit-risk-platform/
-├── ingestion/          # Schemas Pydantic + lector Freddie Mac
 ├── pipelines/
 │   ├── bronze/         # Ingesta a Delta Lake
 │   ├── silver/         # Limpieza y quality checks
