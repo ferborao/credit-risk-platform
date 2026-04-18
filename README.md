@@ -10,8 +10,8 @@ Plataforma que procesa 200,000 hipotecas reales e implementa una arquitectura Me
 
 | Capa | Tecnología |
 |---|---|
-| Ingesta | Python | Procesamiento |
-| PySpark, Delta Lake |
+| Ingesta | Python, PySpark |
+| Procesamiento | PySpark, Delta Lake |
 | Transformación | dbt |
 | Orquestación | Apache Airflow |
 | Infraestructura | Terraform, Docker |
@@ -23,7 +23,7 @@ Plataforma que procesa 200,000 hipotecas reales e implementa una arquitectura Me
 ```
 Freddie Mac (datos reales)
         ↓
-Ingesta Python + Pydantic — validación de schemas
+Ingesta Python + PySpark — lectura y schema
         ↓
 Bronze — Delta Lake — 200,000 registros crudos
         ↓
@@ -57,7 +57,6 @@ credit-risk-platform/
 ## Tests
 
 ```bash
-pytest ingestion/tests/ -v    # 17 tests
 pytest pipelines/tests/ -v    # 10 tests
 cd transform && dbt test       # 13 tests dbt
 ```
