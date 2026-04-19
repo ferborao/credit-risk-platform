@@ -56,8 +56,7 @@ def clean_loans(df: DataFrame) -> DataFrame:
         .withColumn("loan_purpose",            upper(trim(col("loan_purpose")))) \
         .withColumn("property_type",           upper(trim(col("property_type"))))
 
-    # Filtrar registros inválidos — estas reglas son las mismas que en Pydantic
-    # pero aplicadas a escala con Spark
+    # Filtrar registros inválidos
     df_clean = df_typed \
         .filter(col("loan_id").isNotNull()) \
         .filter(col("original_upb").isNotNull() & (col("original_upb") > 0)) \
