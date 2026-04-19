@@ -58,7 +58,7 @@ credit-risk-platform/
 
 ```bash
 pytest pipelines/tests/ -v    # 10 tests
-cd transform && dbt test       # 13 tests dbt
+cd transform && dbt test       # 15 tests dbt
 ```
 
 ## Cómo ejecutar

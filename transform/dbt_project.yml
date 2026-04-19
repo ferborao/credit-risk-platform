@@ -35,10 +35,6 @@ models:
     # Config indicated by + and applies to all files under models/staging/
     staging:
       +materialized: view
-    
-    # Config indicated by + and applies to all files under models/dimensions/
-    dimensions:
-      +materialized: table
 
     # Config indicated by + and applies to all files under models//
     marts:

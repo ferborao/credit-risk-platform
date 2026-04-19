@@ -20,6 +20,10 @@ state_summary as (
     group by property_state
 ),
 
+dim_states as (
+    select * from {{ ref('dim_states') }}
+),
+
 -- Calculamos el porcentaje de concentración sobre el total de la cartera
 with_concentration as (
     select
@@ -29,6 +33,8 @@ with_concentration as (
         avg_ltv,
         avg_interest_rate,
         avg_credit_score,
+        state_name,
+        region,
 
         -- Porcentaje de préstamos sobre el total
         total_loans / sum(total_loans) over ()           as loan_count_pct,
@@ -40,6 +46,8 @@ with_concentration as (
         rank() over (order by total_upb desc)            as concentration_rank
 
     from state_summary
+
+    join dim_states on state_summary.property_state = dim_states.state_code   
 )
 
 select * from with_concentration

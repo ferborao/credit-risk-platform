@@ -39,12 +39,15 @@ models:
     description: "Concentración geográfica del riesgo de cartera por estado"
     columns:
       - name: property_state
-        description: "Estado de la propiedad"
         tests:
           - not_null
           - unique
-
+      - name: state_name
+        tests:
+          - not_null
+      - name: region
+        tests:
+          - not_null
       - name: upb_concentration_pct
-        description: "Porcentaje del UPB total concentrado en este estado"
         tests:
           - not_null
