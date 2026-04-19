@@ -10,6 +10,7 @@ build/
 # Data
 data/
 *.csv
+!transform/seeds/*.csv
 *.gz
 *.parquet
 
