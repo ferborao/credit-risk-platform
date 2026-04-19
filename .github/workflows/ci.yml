@@ -73,11 +73,6 @@ jobs:
                   "spark.sql.warehouse.dir": "/tmp/spark-warehouse"
           EOF
 
-      - name: dbt seed
-        run: |
-          cd transform
-          dbt seed
-
       - name: dbt compile
         run: |
           cd transform
