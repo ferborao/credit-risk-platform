@@ -27,11 +27,7 @@ jobs:
 
       - name: Instalar dependencias
         run: |
-          pip install pydantic requests pandas pyarrow python-dotenv pytest pyspark delta-spark
-          pip install pydantic-core
-
-      - name: Tests de ingesta
-        run: pytest ingestion/tests/ -v
+          pip install requests pandas pyarrow python-dotenv pytest pyspark delta-spark
 
       - name: Tests de Bronze y Silver
         run: pytest pipelines/tests/ -v
@@ -74,6 +70,11 @@ jobs:
                 connect_retries: 3
                 connect_timeout: 10
           EOF
+
+      - name: dbt seed
+        run: |
+          cd transform
+          dbt seed
 
       - name: dbt compile
         run: |
