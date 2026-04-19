@@ -69,6 +69,8 @@ jobs:
                 port: 10001
                 connect_retries: 3
                 connect_timeout: 10
+                spark_config:
+                  "spark.sql.warehouse.dir": "/tmp/spark-warehouse"
           EOF
 
       - name: dbt seed
