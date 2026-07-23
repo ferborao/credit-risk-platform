@@ -2,7 +2,7 @@
 -- No hay transformaciones aquí, solo renombrar y seleccionar columnas relevantes
 
 with source as (
-    select * from parquet.`/home/fernando/credit-risk-platform/data/silver/loans_parquet`
+    select * from {{ source('silver', 'loans') }}
 ),
 
 staged as (

@@ -35,7 +35,9 @@ models:
     # Config indicated by + and applies to all files under models/staging/
     staging:
       +materialized: view
+      +schema: silver
 
     # Config indicated by + and applies to all files under models//
     marts:
       +materialized: table
+      +schema: gold
