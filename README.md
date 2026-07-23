@@ -111,6 +111,15 @@ airflow webserver --port 8080 &
 airflow scheduler
 ```
 
+## Databricks Version
+
+This project has also been migrated to Databricks Free Edition, using:
+- PySpark notebooks for Bronze and Silver, writing to Unity Catalog
+- dbt-databricks for the Gold layer (same SQL models as the local version)
+- Databricks Workflows orchestrating the full pipeline (Bronze → Silver → dbt run/test)
+
+**Catalog:** `credit_risk_platform` with schemas `bronze`, `silver`, `gold`
+
 ## Fuente de datos
 
 Freddie Mac Single Family Loan-Level Dataset — datos reales de originación y rendimiento de hipotecas desde 1999. Requiere registro gratuito en freddiemac.com.
