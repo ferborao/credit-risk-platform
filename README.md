@@ -1,56 +1,56 @@
 # Credit Risk Data Platform
 
-Pipeline de datos end-to-end para análisis de riesgo de cartera hipotecaria, construido sobre datos reales de Freddie Mac Single Family Loan-Level Dataset.
+End-to-end data pipeline for mortgage portfolio credit risk analysis, built on real Freddie Mac Single Family Loan-Level Dataset.
 
-## Descripción
+## Description
 
-Plataforma que procesa 200,000 hipotecas reales e implementa una arquitectura Medallion completa (Bronze → Silver → Gold) para calcular métricas de riesgo de crédito: vintage analysis, concentración geográfica y análisis de perfil por LTV.
+This platform processes 200,000 real mortgage loans and implements a full Medallion architecture (Bronze → Silver → Gold) to compute credit risk metrics such as vintage analysis, geographic concentration, and risk profiles by LTV.
 
-## Stack tecnológico
+## Technology stack
 
-| Capa | Tecnología |
+| Layer | Technology |
 |---|---|
-| Ingesta | Python, PySpark |
-| Procesamiento | PySpark, Delta Lake |
-| Transformación | dbt |
-| Orquestación | Apache Airflow |
-| Infraestructura | Terraform, Docker |
-| Visualización | Streamlit, Plotly |
+| Ingestion | Python, PySpark |
+| Processing | PySpark, Delta Lake |
+| Transformation | dbt |
+| Orchestration | Apache Airflow |
+| Infrastructure | Terraform, Docker |
+| Visualization | Streamlit, Plotly |
 | CI/CD | GitHub Actions |
 
-## Arquitectura
+## Architecture
 
 ```
-Freddie Mac (datos reales)
+Freddie Mac (real data)
         ↓
-Ingesta Python + PySpark — lectura y schema
+Ingestion Python + PySpark — read and apply schema
         ↓
-Bronze — Delta Lake — 200,000 registros crudos
+Bronze — Delta Lake — 200,000 raw records
         ↓
-Silver — PySpark — 199,867 registros limpios
+Silver — PySpark — 199,867 cleaned records
         ↓
-Gold — dbt — métricas de riesgo
+Gold — dbt — risk metrics
         ↓
-Dashboard Streamlit
+Streamlit Dashboard
 ```
 
-## Métricas calculadas
+## Calculated metrics
 
-- **Vintage analysis** — tasa de default acumulada por cohorte trimestral. Las cohortes de 2006-2008 muestran deterioro visible frente a periodos anteriores.
-- **Concentración geográfica** — porcentaje del UPB total por estado. California concentra más del 25% del riesgo.
-- **Perfil de riesgo por LTV** — distribución de préstamos y volumen por bucket de LTV (60, 70, 80, 90, 90+).
+- **Vintage analysis** — cumulative default rate by quarterly cohort. Cohorts from 2006–2008 show visible deterioration compared to earlier periods.
+- **Geographic concentration** — percentage of total UPB by state. California concentrates over 25% of the exposure.
+- **Risk profile by LTV** — distribution of loans and volumes by LTV buckets (60, 70, 80, 90, 90+).
 
-## Estructura del proyecto
+## Project structure
 
 ```
 credit-risk-platform/
 ├── pipelines/
-│   ├── bronze/         # Ingesta a Delta Lake
-│   ├── silver/         # Limpieza y quality checks
-│   └── gold/           # Export Gold a Parquet
-├── transform/          # Modelos dbt (staging + marts)
-├── orchestration/      # DAG de Airflow
-├── dashboard/          # Aplicación Streamlit
+│   ├── bronze/         # Ingest to Delta Lake
+│   ├── silver/         # Cleaning and quality checks
+│   └── gold/           # Export Gold to Parquet
+├── transform/          # dbt models (staging + marts)
+├── orchestration/      # Airflow DAGs
+├── dashboard/          # Streamlit app
 └── infra/              # Terraform (Azure)
 ```
 
@@ -58,17 +58,17 @@ credit-risk-platform/
 
 ```bash
 pytest pipelines/tests/ -v    # 10 tests
-cd transform && dbt test       # 15 tests dbt
+cd transform && dbt test       # 15 dbt tests
 ```
 
-## Cómo ejecutar
+## How to run
 
-### Requisitos
+### Requirements
 - Python 3.12+
-- Java 11+ (para PySpark)
+- Java 11+ (for PySpark)
 - WSL2 / Linux / macOS
 
-### Instalación
+### Installation
 
 ```bash
 git clone https://github.com/ferborao/credit-risk-platform
@@ -78,10 +78,10 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Pipeline completo
+### Full pipeline
 
 ```bash
-# 1. Descargar datos de Freddie Mac en data/raw/freddie_mac/
+# 1. Download Freddie Mac data to data/raw/freddie_mac/
 #    https://freddiemac.embs.com/FLoan/secure/auth.php
 
 # 2. Bronze
@@ -100,7 +100,7 @@ GOLD_PATH=$(pwd)/data/gold python pipelines/export_gold.py
 streamlit run dashboard/app.py
 ```
 
-### Airflow (orquestación automática)
+### Airflow (automated orchestration)
 
 ```bash
 export AIRFLOW_HOME=~/airflow
@@ -111,7 +111,7 @@ airflow webserver --port 8080 &
 airflow scheduler
 ```
 
-## Databricks Version
+## Databricks version
 
 This project has also been migrated to Databricks Free Edition, using:
 - PySpark notebooks for Bronze and Silver, writing to Unity Catalog
@@ -120,6 +120,6 @@ This project has also been migrated to Databricks Free Edition, using:
 
 **Catalog:** `credit_risk_platform` with schemas `bronze`, `silver`, `gold`
 
-## Fuente de datos
+## Data source
 
-Freddie Mac Single Family Loan-Level Dataset — datos reales de originación y rendimiento de hipotecas desde 1999. Requiere registro gratuito en freddiemac.com.
+Freddie Mac Single Family Loan-Level Dataset — real loan-level origination and performance data since 1999. Registration on freddiemac.com is required to download the data.
