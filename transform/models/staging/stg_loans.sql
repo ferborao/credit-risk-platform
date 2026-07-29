@@ -2,7 +2,11 @@
 -- No hay transformaciones aquí, solo renombrar y seleccionar columnas relevantes
 
 with source as (
-    select * from {{ source('silver', 'loans') }}
+    {% if target.name == 'databricks' %}
+        select * from {{ source('silver', 'loans') }}
+    {% else %}
+        select * from parquet.`/home/fernando/credit-risk-platform/data/silver/loans_parquet`
+    {% endif %}
 ),
 
 staged as (

@@ -2,7 +2,6 @@ version: 2
 
 sources:
   - name: silver
-    catalog: credit_risk_platform
     schema: silver
     tables:
       - name: loans
